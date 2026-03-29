@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Virtualno okruženje
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Podaci (NE commitati bazu ni podatke)
+data/
+*.db
+*.sqlite
+*.parquet
+
+# Tajne (NIKAD commitati!)
+config/secrets.yaml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logovi
+*.log
+logs/
+
+# Coverage
+htmlcov/
+.coverage

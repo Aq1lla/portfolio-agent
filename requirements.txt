@@ -1,0 +1,35 @@
+# ══════════════════════════════════════════════════════════════
+# Portfolio Agent — Faza 1: Dependencije
+# ══════════════════════════════════════════════════════════════
+
+# Jezgreno
+pydantic>=2.5
+pyyaml>=6.0
+
+# Broker API
+alpaca-trade-api>=3.0.2
+
+# Analitika
+pandas>=2.1
+numpy>=1.26
+
+# Data (fallback provider)
+yfinance>=0.2.31
+
+# Testiranje
+pytest>=7.4
+pytest-cov>=4.1
+
+# Logging
+loguru>=0.7
+
+# ── Faza 2+ (instaliraj kad bude potrebno) ──
+# apscheduler>=3.10
+# backtrader>=1.9
+# pyarrow>=14.0
+# quantstats>=0.0.62
+
+# ── Faza 3+ ──
+# python-telegram-bot>=20.7
+# sentry-sdk>=1.39
+# tenacity>=8.2
