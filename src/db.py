@@ -365,7 +365,7 @@ class Database:
         with self._conn() as conn:
             conn.execute(
                 """
-                INSERT INTO trade_orders
+                INSERT OR REPLACE INTO trade_orders
                     (id, symbol, side, qty, order_type, limit_price,
                      status, created_at, filled_at, filled_price, reason)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)

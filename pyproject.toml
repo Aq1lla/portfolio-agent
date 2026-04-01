@@ -18,6 +18,7 @@ dependencies = [
     "backtrader>=1.9",
     "pyarrow>=14.0",
     "quantstats>=0.0.62",
+    "alpaca-py>=0.43.2",
 ]
 
 [build-system]

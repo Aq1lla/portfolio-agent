@@ -24,10 +24,10 @@ pytest-cov>=4.1
 loguru>=0.7
 
 # ── Faza 2+ (instaliraj kad bude potrebno) ──
-# apscheduler>=3.10
-# backtrader>=1.9
-# pyarrow>=14.0
-# quantstats>=0.0.62
+apscheduler>=3.10
+backtrader>=1.9
+pyarrow>=14.0
+quantstats>=0.0.62
 
 # ── Faza 3+ ──
 # python-telegram-bot>=20.7
