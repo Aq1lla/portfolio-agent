@@ -30,6 +30,7 @@ pyarrow>=14.0
 quantstats>=0.0.62
 
 # ── Faza 3+ ──
+apscheduler>=3.10
 # python-telegram-bot>=20.7
 # sentry-sdk>=1.39
 # tenacity>=8.2

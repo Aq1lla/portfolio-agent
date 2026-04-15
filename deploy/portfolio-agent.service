@@ -1,0 +1,54 @@
+# Portfolio Agent — systemd service
+#
+# Instalacija:
+#   1. Kopiraj ovu datoteku:
+#      sudo cp deploy/portfolio-agent.service /etc/systemd/system/
+#
+#   2. Prilagodi putanje (WorkingDirectory, ExecStart) prema tvom setupu
+#
+#   3. Pokreni:
+#      sudo systemctl daemon-reload
+#      sudo systemctl enable portfolio-agent
+#      sudo systemctl start portfolio-agent
+#
+#   4. Provjeri status:
+#      sudo systemctl status portfolio-agent
+#      journalctl -u portfolio-agent -f
+
+[Unit]
+Description=Portfolio Agent — Automatizirani Portfolio Manager
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=portfolio
+Group=portfolio
+
+# Prilagodi ove putanje prema svom setupu
+WorkingDirectory=/home/portfolio/portfolio-agent
+ExecStart=/home/portfolio/portfolio-agent/.venv/bin/python runner.py --config config/strategy.yaml --secrets config/secrets.yaml --interval 5
+
+# Restart politika
+Restart=on-failure
+RestartSec=30
+StartLimitBurst=5
+StartLimitIntervalSec=300
+
+# Logiranje
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=portfolio-agent
+
+# Sigurnost
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/portfolio/portfolio-agent/data /home/portfolio/portfolio-agent/logs
+
+# Graceful shutdown (SIGTERM → agent.shutdown())
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
