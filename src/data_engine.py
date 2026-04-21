@@ -79,6 +79,7 @@ class AlpacaDataProvider(BaseDataProvider):
         try:
             from alpaca.data import StockHistoricalDataClient
             from alpaca.trading import TradingClient
+            from alpaca.data.enums import DataFeed
         except ImportError:
             raise ImportError(
                 "alpaca-py nije instaliran. "
@@ -111,6 +112,7 @@ class AlpacaDataProvider(BaseDataProvider):
         """Dohvati historijske OHLCV podatke putem Alpaca API-ja."""
         from alpaca.data.requests import StockBarsRequest
         from alpaca.data.timeframe import TimeFrame
+        from alpaca.data.enums import DataFeed
 
         # Mapiraj string timeframe na TimeFrame objekt
         tf_map = {
@@ -129,10 +131,11 @@ class AlpacaDataProvider(BaseDataProvider):
                 start=start,
                 end=end,
                 limit=10000,
+                feed=DataFeed.IEX,
             )
 
             bars_response = self.data_client.get_stock_bars(request)
-
+            """
             result = []
             # alpaca-py vraća dict {symbol: [Bar, ...]}
             symbol_bars = bars_response.get(symbol, [])
@@ -146,6 +149,17 @@ class AlpacaDataProvider(BaseDataProvider):
                     symbol_bars = bars_response[symbol]
                 except (KeyError, TypeError):
                     symbol_bars = []
+            """
+            result = []
+            # alpaca-py vraća BarSet objekt — pristup po simbolu
+            symbol_bars = []
+            try:
+                symbol_bars = bars_response[symbol]
+            except (KeyError, TypeError):
+                if hasattr(bars_response, 'data'):
+                    symbol_bars = bars_response.data.get(symbol, [])
+                elif isinstance(bars_response, dict):
+                    symbol_bars = bars_response.get(symbol, [])
 
             for bar in symbol_bars:
                 result.append(PriceBar(
@@ -172,9 +186,13 @@ class AlpacaDataProvider(BaseDataProvider):
     def get_latest_bar(self, symbol: str) -> Optional[PriceBar]:
         """Dohvati zadnji OHLCV zapis."""
         from alpaca.data.requests import StockLatestBarRequest
+        from alpaca.data.enums import DataFeed
 
         try:
-            request = StockLatestBarRequest(symbol_or_symbols=symbol)
+            request = StockLatestBarRequest(
+                symbol_or_symbols=symbol,
+                feed=DataFeed.IEX,
+            )
             response = self.data_client.get_stock_latest_bar(request)
 
             # Response je dict {symbol: Bar} ili objekt s pristupom po ključu
@@ -208,10 +226,14 @@ class AlpacaDataProvider(BaseDataProvider):
     def get_latest_bars_multi(self, symbols: List[str]) -> Dict[str, PriceBar]:
         """Dohvati zadnje barove za više simbola odjednom."""
         from alpaca.data.requests import StockLatestBarRequest
+        from alpaca.data.enums import DataFeed
 
         result = {}
         try:
-            request = StockLatestBarRequest(symbol_or_symbols=symbols)
+            request = StockLatestBarRequest(
+                symbol_or_symbols=symbols,
+                feed=DataFeed.IEX,
+            )
             response = self.data_client.get_stock_latest_bar(request)
 
             # Iteriraj kroz simbole

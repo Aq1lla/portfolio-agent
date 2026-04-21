@@ -6,60 +6,60 @@
 portfolio:
   name: "Moj Portfolio"
   base_currency: USD
-  benchmark: SPY                    # S&P 500 ETF kao referentni indeks
+  benchmark: SPY # S&P 500 ETF kao referentni indeks
 
 # ──────────────────────────────────────────────────────────────
 # Ciljna alokacija imovine
 # Svi postoci moraju zbrojiti 1.0 (100%)
 # ──────────────────────────────────────────────────────────────
 allocation:
-  VTI: 0.35                         # Vanguard Total Stock Market ETF (US)
-  VXUS: 0.25                        # Vanguard Total International Stock ETF
-  BND: 0.20                         # Vanguard Total Bond Market ETF
-  BNDX: 0.10                        # Vanguard Total International Bond ETF
-  GLD: 0.05                         # SPDR Gold Shares
+  VTI: 0.35 # Vanguard Total Stock Market ETF (US)
+  VXUS: 0.25 # Vanguard Total International Stock ETF
+  BND: 0.20 # Vanguard Total Bond Market ETF
+  BNDX: 0.10 # Vanguard Total International Bond ETF
+  GLD: 0.05 # SPDR Gold Shares
   # CASH se automatski računa kao ostatak do 1.0 (5%)
 
 # ──────────────────────────────────────────────────────────────
 # Rebalansiranje
 # ──────────────────────────────────────────────────────────────
 rebalancing:
-  threshold_pct: 5.0                 # Rebalansiraj kad pozicija odstupa >5% od cilja
-  frequency: monthly                 # Provjera: daily | weekly | monthly
-  method: threshold                  # threshold | calendar | hybrid
-  day_of_month: 1                    # Za monthly: koji dan u mjesecu
+  threshold_pct: 5.0 # Rebalansiraj kad pozicija odstupa >5% od cilja
+  frequency: monthly # Provjera: daily | weekly | monthly
+  method: threshold # threshold | calendar | hybrid
+  day_of_month: 1 # Za monthly: koji dan u mjesecu
 
 # ──────────────────────────────────────────────────────────────
 # Dollar-Cost Averaging (DCA)
 # ──────────────────────────────────────────────────────────────
 dca:
   enabled: true
-  amount: 200.0                      # Iznos po ciklusu ($)
-  frequency: weekly                  # daily | weekly | biweekly | monthly
-  day: monday                        # Za weekly: koji dan
-  distribute_by: target              # target (prema ciljnoj alokaciji) | equal | underweight
+  amount: 200.0 # Iznos po ciklusu ($)
+  frequency: weekly # daily | weekly | biweekly | monthly
+  day: monday # Za weekly: koji dan
+  distribute_by: target # target (prema ciljnoj alokaciji) | equal | underweight
 
 # ──────────────────────────────────────────────────────────────
 # Upravljanje rizikom
 # ──────────────────────────────────────────────────────────────
 risk:
-  max_daily_loss_pct: 3.0            # Pauziraj sve ako dnevni gubitak > 3%
-  max_drawdown_pct: 15.0             # Zaustavi sve ako portfelj padne 15% od vrha
-  max_position_pct: 40.0             # Max 40% portfelja u jednoj poziciji
-  circuit_breaker_vix: 35.0          # Pauza kupnje ako VIX > 35
-  min_cash_reserve_pct: 5.0          # Uvijek drži min 5% u cashu
-  max_orders_per_day: 10             # Max 10 naloga dnevno
-  order_type: limit                  # limit | market (uvijek koristiti limit)
-  limit_offset_pct: 0.1             # Limit cijena = tržišna +/- 0.1%
+  max_daily_loss_pct: 3.0 # Pauziraj sve ako dnevni gubitak > 3%
+  max_drawdown_pct: 15.0 # Zaustavi sve ako portfelj padne 15% od vrha
+  max_position_pct: 40.0 # Max 40% portfelja u jednoj poziciji
+  circuit_breaker_vix: 35.0 # Pauza kupnje ako VIX > 35
+  min_cash_reserve_pct: 5.0 # Uvijek drži min 5% u cashu
+  max_orders_per_day: 100 # Max 10 naloga dnevno
+  order_type: limit # limit | market (uvijek koristiti limit)
+  limit_offset_pct: 0.1 # Limit cijena = tržišna +/- 0.1%
 
 # ──────────────────────────────────────────────────────────────
 # Obavijesti
 # ──────────────────────────────────────────────────────────────
 notifications:
   telegram:
-    enabled: false                   # Postaviti na true kad se konfigurira bot
+    enabled: false # Postaviti na true kad se konfigurira bot
     chat_id: ""
-    bot_token: ""                    # NIKAD commitati u git!
+    bot_token: "" # NIKAD commitati u git!
   daily_summary: true
   trade_alerts: true
   risk_alerts: true
@@ -69,15 +69,15 @@ notifications:
 # Data Engine postavke
 # ──────────────────────────────────────────────────────────────
 data:
-  provider: alpaca                   # alpaca | yahoo (fallback)
-  history_days: 365                  # Koliko dana historije dohvatiti pri inicijalizaciji
-  snapshot_interval_sec: 60          # Koliko često dohvatiti snapshot portfelja
-  store_path: "./data/market.db"     # Putanja do SQLite baze
+  provider: alpaca # alpaca | yahoo (fallback)
+  history_days: 365 # Koliko dana historije dohvatiti pri inicijalizaciji
+  snapshot_interval_sec: 60 # Koliko često dohvatiti snapshot portfelja
+  store_path: "./data/market.db" # Putanja do SQLite baze
 
 # ──────────────────────────────────────────────────────────────
 # Broker postavke
 # ──────────────────────────────────────────────────────────────
 broker:
   provider: alpaca
-  paper_trading: true                # TRUE = paper trading, FALSE = live
-  base_url: "https://paper-api.alpaca.markets"  # Paper trading URL
+  paper_trading: true # TRUE = paper trading, FALSE = live
+  base_url: "https://paper-api.alpaca.markets" # Paper trading URL

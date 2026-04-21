@@ -61,9 +61,9 @@ def parse_args():
     )
     return parser.parse_args()
 
-
+"""
 def create_agent(args):
-    """Kreiraj i inicijaliziraj agenta."""
+    # Kreiraj i inicijaliziraj agenta.
     from src.agent import Agent
 
     secrets_path = args.secrets if not args.dry_run else None
@@ -73,7 +73,34 @@ def create_agent(args):
         secrets_path=secrets_path,
     )
     return agent
+"""
 
+def create_agent(args):
+    from src.agent import Agent
+    
+    secrets_path = args.secrets if not args.dry_run else None
+    
+    # Za paper trading: kreiraj broker klijent
+    broker_client = None
+    if not args.dry_run and secrets_path:
+        import yaml
+        with open(secrets_path, encoding="utf-8") as f:
+            secrets = yaml.safe_load(f)
+        alpaca = secrets.get("alpaca", {})
+        if alpaca.get("api_key") and alpaca["api_key"] != "YOUR_ALPACA_API_KEY":
+            from alpaca.trading import TradingClient
+            broker_client = TradingClient(
+                api_key=alpaca["api_key"],
+                secret_key=alpaca["secret_key"],
+                paper=True,
+            )
+    
+    agent = Agent.from_config(
+        config_path=args.config,
+        secrets_path=secrets_path,
+        broker_client=broker_client,
+    )
+    return agent
 
 def run_once(agent):
     """Pokreni jedan ciklus."""
