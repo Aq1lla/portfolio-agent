@@ -38,3 +38,6 @@ logs/
 # Coverage
 htmlcov/
 .coverage
+
+# Claude Code lokalne postavke
+.claude/settings.local.json
