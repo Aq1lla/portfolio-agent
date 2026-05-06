@@ -1,6 +1,19 @@
 # ══════════════════════════════════════════════════════════════
 # Portfolio Agent — Konfiguracija strategije
-# Verzija: 1.0
+# Verzija: 1.1 — Core+Satellite (2026-05-05)
+# ══════════════════════════════════════════════════════════════
+#
+# Filozofija: Core+Satellite
+#   CORE (90%): Boglehead ETF logika — pasivno, diversificirano,
+#               dugoročno. Ne diraj osim godišnjeg rebalansiranja.
+#   SATELLITE (5%): Motley Fool high-conviction picks — aktivni
+#                   play na specifične mega-trendove. Max 3 pozicije,
+#                   samo ★★★ konvikcija iz Gajine analize.
+#   CASH (5%): Automatski ostatak do 1.0. Min rezerva za DCA i
+#              rebalansiranje.
+#
+# Core je smanjen razmjerno (95% → 90%, scale 0.947) da oslobodi
+# prostor za satelite bez narušavanja relativnih omjera ETFova.
 # ══════════════════════════════════════════════════════════════
 
 portfolio:
@@ -10,15 +23,26 @@ portfolio:
 
 # ──────────────────────────────────────────────────────────────
 # Ciljna alokacija imovine
-# Svi postoci moraju zbrojiti 1.0 (100%)
+# Zbroj mora biti < 1.0 — ostatak je CASH (cilj: 5%)
 # ──────────────────────────────────────────────────────────────
 allocation:
-  VTI: 0.35 # Vanguard Total Stock Market ETF (US)
-  VXUS: 0.25 # Vanguard Total International Stock ETF
-  BND: 0.20 # Vanguard Total Bond Market ETF
-  BNDX: 0.10 # Vanguard Total International Bond ETF
-  GLD: 0.05 # SPDR Gold Shares
-  # CASH se automatski računa kao ostatak do 1.0 (5%)
+  targets:
+    # ── CORE (90%) — Boglehead pasivna strategija ────────────
+    VTI:  0.33 # Vanguard Total Stock Market ETF (US) — sidro portfelja
+    VXUS: 0.24 # Vanguard Total International Stock ETF — globalna diverzifikacija
+    BND:  0.19 # Vanguard Total Bond Market ETF — stabilizirajući element
+    BNDX: 0.09 # Vanguard Total International Bond ETF — valutna diverzifikacija
+    GLD:  0.05 # SPDR Gold Shares — inflacijska zaštita i kriza hedge
+
+    # ── SATELLITE (5%) — MF High-Conviction, ★★★ tier ───────
+    # Izvor: Gaia analiza 10 Motley Fool dokumenata (2026-05-05)
+    # Pravilo: max 3 pozicije, samo ★★★ konvikcija.
+    # Pratiti kvartalno — ulaz/izlaz odlučuje Mirko.
+    NVDA: 0.02 # NVIDIA — GPU/AI computing; ★★★
+    EME:  0.02 # EMCOR Group — AI infra construction; ★★★
+    ZS:   0.01 # Zscaler — zero-trust cybersecurity; ★ "Next Magnificent 7"
+
+    # CASH = 1.0 - 0.95 = 0.05 (automatski)
 
 # ──────────────────────────────────────────────────────────────
 # Rebalansiranje

@@ -306,7 +306,9 @@ def load_config(path: str) -> StrategyConfig:
         raw = yaml.safe_load(f)
 
     # Pretvoriti allocation mapu u AllocationConfig objekt
+    # Podržava oba formata: flat {VTI: 0.35} i novi {targets: {VTI: 0.35}}
     allocation_raw = raw.get("allocation", {})
-    raw["allocation"] = {"targets": allocation_raw}
+    if "targets" not in allocation_raw:
+        raw["allocation"] = {"targets": allocation_raw}
 
     return StrategyConfig(**raw)
