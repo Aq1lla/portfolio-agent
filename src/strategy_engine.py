@@ -318,10 +318,11 @@ class StrategyEngine:
             amount = max(0, available)
             if amount < 1.0:
                 logger.info(
-                    "Nedovoljno cash-a za DCA (dostupno: $%.2f, potrebno: $%.2f).",
-                    available, self.dca.amount
+                    "Nedovoljno cash-a za DCA (dostupno: $%.2f, potrebno: $%.2f). "
+                    "Pokrećem cash restoration.",
+                    available, self.dca.amount,
                 )
-                return []
+                return self._generate_cash_restoration(snapshot, prices)
             logger.info(
                 "DCA iznos smanjen na $%.2f (cash ograničenje).", amount
             )
@@ -421,6 +422,82 @@ class StrategyEngine:
             s: amount * (self.allocation.targets.get(s, 0) / total_target)
             for s in symbols
         }
+
+    # ══════════════════════════════════════════════════════
+    # Cash restoration
+    # ══════════════════════════════════════════════════════
+
+    def _generate_cash_restoration(
+        self,
+        snapshot: PortfolioSnapshot,
+        prices: Dict[str, float],
+    ) -> List[TradeOrder]:
+        """
+        Prodaj minimalnu količinu najprekomjernije pozicije da se financira
+        sljedeći DCA ciklus.
+
+        Logika:
+          - needed = min_cash_reserve + dca_amount - trenutni_cash
+          - prodaje se simbol s najvećim drift_pct (najprecizajniji)
+          - qty se ograničava na stvarnu veličinu pozicije
+        """
+        needed = (
+            (self.risk.min_cash_reserve_pct / 100) * snapshot.equity
+            + self.dca.amount
+            - snapshot.cash
+        )
+        if needed <= 0:
+            return []
+
+        drift = self.calculate_drift(snapshot)
+
+        # Sortiraj po drift_pct opadajuće — najprecizajniji simbol na vrhu
+        candidates = sorted(
+            [
+                (symbol, info)
+                for symbol, info in drift.items()
+                if symbol != "CASH" and prices.get(symbol, 0) > 0
+            ],
+            key=lambda x: x[1]["drift_pct"],
+            reverse=True,
+        )
+
+        if not candidates:
+            logger.warning("Cash restoration: nema kandidata za prodaju.")
+            return []
+
+        symbol, info = candidates[0]
+        price = prices[symbol]
+
+        qty = round(needed / price, 2)
+        if qty < 0.01:
+            return []
+
+        pos = snapshot.get_position(symbol)
+        if pos and qty > pos.qty:
+            qty = round(pos.qty, 2)
+        if qty < 0.01:
+            return []
+
+        limit_price = round(price * (1 - self.risk.limit_offset_pct / 100), 2)
+
+        order = TradeOrder(
+            id=self._generate_order_id(),
+            symbol=symbol,
+            side=OrderSide.SELL,
+            qty=qty,
+            order_type=OrderType.LIMIT,
+            limit_price=limit_price,
+            reason=(
+                f"cash_restore: potrebno ${needed:.0f} "
+                f"({symbol} drift={info['drift_pct']:+.1f}%)"
+            ),
+        )
+        logger.info(
+            "Cash restoration: prodajem %.2f %s ($%.2f) da financiram DCA ciklus.",
+            qty, symbol, qty * price,
+        )
+        return [order]
 
     # ══════════════════════════════════════════════════════
     # Utility

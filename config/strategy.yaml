@@ -71,7 +71,7 @@ risk:
   max_drawdown_pct: 15.0 # Zaustavi sve ako portfelj padne 15% od vrha
   max_position_pct: 40.0 # Max 40% portfelja u jednoj poziciji
   circuit_breaker_vix: 35.0 # Pauza kupnje ako VIX > 35
-  min_cash_reserve_pct: 5.0 # Uvijek drži min 5% u cashu
+  min_cash_reserve_pct: 2.0 # Uvijek drži min 2% u cashu (5% je cash_target u allocation)
   max_orders_per_day: 100 # Max 10 naloga dnevno
   order_type: limit # limit | market (uvijek koristiti limit)
   limit_offset_pct: 0.1 # Limit cijena = tržišna +/- 0.1%
